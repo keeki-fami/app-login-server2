@@ -2,6 +2,7 @@ const http = require("http");
 const jwt = require("jsonwebtoken"); //??
 const appleSignin = require("apple-signin-auth");
 require('dotenv').config();
+const PORT = process.env.PORT || 8080;
 
 const SECRET_KEY = process.env.Jwt_Secret;
 const APPLE_CLIENT_ID = process.env.Apple_Client_Id;
@@ -53,4 +54,6 @@ http.createServer((req,res)=>{
     });
   }
 
-}).listen(8080);
+}).listen(PORT,()=>{
+	console.log(`running on ${PORT}`);
+});
