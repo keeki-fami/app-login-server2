@@ -21,6 +21,7 @@ http.createServer((req,res)=>{
 	try{
           const {identityToken, nonce} = JSON.parse(body);
           
+	  console.log(`nonce:${nonce}`);
 	  //Appleトークンの検証
 	  const payload = await appleSignin.verifyIdToken(identityToken,{
 	    audience:APPLE_CLIENT_ID,
