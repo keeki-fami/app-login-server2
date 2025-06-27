@@ -15,6 +15,7 @@ http.createServer((req,res)=>{
     req.on("data",chunk=>{
         body += chunk;
     });
+    console.log(`body for data:\(body)`);
 
     req.on("end",async ()=>{
 	try{
