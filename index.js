@@ -21,6 +21,12 @@ http.createServer((req,res)=>{
 	try{
           const {identityToken, nonce} = JSON.parse(body);
           
+
+	  const base64Payload = identityToken.split('.')[1];
+	  const payloadBuffer = Buffer.from(base64Payload, 'base64');
+	  const payloadJSON = payloadBuffer.toString('utf-8');
+	  console.log("Decoded JWT payload:", payloadJSON);
+	  console.log("APPLE_CLIENT_ID:",APPLE_CLIENT_ID);
 	  console.log(`nonce:${nonce}`);
 	  //Appleトークンの検証
 	  const payload = await appleSignin.verifyIdToken(identityToken,{
