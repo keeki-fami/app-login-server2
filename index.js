@@ -42,6 +42,7 @@ http.createServer((req,res)=>{
 	  //res.write(`Apple ID sub:${payload.sub}\n`);
 	  res.end(JSON.stringify({token}));
 	}catch(e){
+	  console.error("verifyIdToken error:", e);
 	  res.writeHead(400,{
             "Content-Type":"application/json"
           });	
