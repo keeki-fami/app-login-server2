@@ -25,6 +25,7 @@ http.createServer((req,res)=>{
 	    audience:APPLE_CLIENT_ID,
 	    nonce: nonce,
 	  });
+	  console.log("Expected nonce (raw):",nonce);
 
 	  //JWTトークンの生成
 	  const token = jwt.sign(
@@ -39,6 +40,7 @@ http.createServer((req,res)=>{
           res.writeHead(200,{
 	    "Content-Type":"application/json"
 	  });
+	  console.log("Token nonce (decoded):",payload.nonce);
 	  //res.write(`Apple ID sub:${payload.sub}\n`);
 	  res.end(JSON.stringify({token}));
 	}catch(e){
