@@ -15,9 +15,9 @@ http.createServer((req,res)=>{
     req.on("data",chunk=>{
         body += chunk;
     });
-    console.log(`body for data:${body}`);
 
     req.on("end",async ()=>{
+	console.log(`body for data:${body}`);
 	try{
           const {identityToken, nonce} = JSON.parse(body);
           
