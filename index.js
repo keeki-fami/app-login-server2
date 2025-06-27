@@ -28,6 +28,7 @@ http.createServer((req,res)=>{
 	    nonce: nonce,
 	  });
 	  console.log("Expected nonce (raw):",nonce);
+	  console.log("secret key is:${SECRET_KEY}");
 
 	  //JWTトークンの生成
 	  const token = jwt.sign(
