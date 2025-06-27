@@ -39,13 +39,13 @@ http.createServer((req,res)=>{
           res.writeHead(200,{
 	    "Content-Type":"application/json"
 	  });
-	  res.write(`Apple ID sub:${payload.sub}\n`);
+	  //res.write(`Apple ID sub:${payload.sub}\n`);
 	  res.end(JSON.stringify({token}));
 	}catch(e){
 	  res.writeHead(400,{
             "Content-Type":"application/json"
           });	
-	  res.end("invalid request");
+	  res.end(JSON.stringify({error:"invalid request"}));
 	}
     });
   }else{
