@@ -37,20 +37,20 @@ http.createServer((req,res)=>{
 	  );
 
           res.writeHead(200,{
-	    "Content-Type":"text/plain;charset=utf-8"
+	    "Content-Type":"application/json"
 	  });
 	  res.write(`Apple ID sub:${payload.sub}\n`);
 	  res.end(JSON.stringify({token}));
 	}catch(e){
 	  res.writeHead(400,{
-            "Content-Type":"text/plain;charset=utf-8"
+            "Content-Type":"application/json"
           });	
 	  res.end("invalid request");
 	}
     });
   }else{
     res.writeHead(404,{
-        "Content-Type":"text/plain;charset=utf-8"
+        "Content-Type":"application/json"
     });
     res.end("Not Found");
   }
