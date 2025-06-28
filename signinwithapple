@@ -1,0 +1,29 @@
+<!DOCTYPE>
+<html lang="ja">
+    <head>
+        <meta charset = "UTF-8">
+        <title>welcome</title>
+        <script src = "https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
+    </head>
+    <body>
+        <h1>login</h1>
+        <div id ="appleid-signin"
+            data-color="black"
+            data-border="true"
+            data-type="sign in">
+        </div>
+
+        <script>
+            const nonce = crypto.randomUUID();
+            localStorage.setItem("auth_nonce",nonce);
+
+            AppleID.auth.init({
+                clientId:"com.sosuu.login",
+                scope:"name email",
+                redirectURI:"https:your-web-a.onrender.com/callback.html",
+                state :"randomCSRFToken",
+                nonce:nonce
+            });
+        </script>
+    </body>
+</html>
