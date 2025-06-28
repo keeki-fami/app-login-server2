@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <title>認証中...</title>
+    </head>
+    <body>
+        <p>ログインを検証しています。</p>
+        <script>
+            async function main(){
+                //window.location.hash : URLの#以降を取得
+                //.substr(1)：#を取り除く
+                const hash = new URLSearchParams(window.location.hash.substr(1));
+                const id_token = hash.get("id_token");
+                const state = hash.get("state");
+                const nonce = localStorage.getItem("auth_nonce");
+
+
+                if(!id_token||!nonce){
+                    location.href = "myapp://signin?status=fail";//info.plistで設定が必要
+                    return;
+                }
+
+                try{
+                    //fetch : URL：検証用サーバ , 
+                    //JSON.stringify:json文字列に変換
+                    //
+                    const res = await fetch("https://your-server-b.onrender.com/verify",{
+                        method:"POST",
+                        headers:{"Content-Type":"application/json"},
+                        body:JSON.stringify({
+                            identityToken: id_token,
+                            nonce:nonce
+                        })
+                    });
+
+                    const result = await res.json();
+                    if(resilt.success){
+                        location.href = "myapp://signin?status=ok";
+                    }else{
+                        location.href = "myapp://signin?status=fail";
+                    }
+                }catch(e){
+                    location.href = "myapp://signin?status=fail";
+                }
+            
+            main();
+        </script>
+    </body>
+</html>
