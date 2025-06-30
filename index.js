@@ -1,72 +1,57 @@
-const http = require("http");
-const jwt = require("jsonwebtoken"); //??
+const express = require("express");
+const jwt = require("jsonwebtoken");
 const appleSignin = require("apple-signin-auth");
-require('dotenv').config();
+require("dotenv").config();
+
+const app = express();
 const PORT = process.env.PORT || 8080;
 
 const SECRET_KEY = process.env.Jwt_Secret;
 const APPLE_CLIENT_ID = process.env.Apple_Client_Id;
 
-http.createServer((req,res)=>{
-  if(req.method==="POST" && req.url==="/appleSignIn"){
-    let body = "";
-    
-    //postされたデータを受け取る
-    req.on("data",chunk=>{
-        body += chunk;
+// JSONのボディをパースするミドルウェア
+app.use(express.json());
+
+// POST /appleSignIn エンドポイント
+app.post("/appleSignIn", async (req, res) => {
+  try {
+    const { identityToken, nonce } = req.body;
+
+    if (!identityToken || !nonce) {
+      return res.status(400).json({ error: "Missing identityToken or nonce" });
+    }
+
+    // Appleトークンの検証
+    const payload = await appleSignin.verifyIdToken(identityToken, {
+      audience: APPLE_CLIENT_ID,
+      nonce: nonce,
     });
 
-    req.on("end",async ()=>{
-	console.log(`body for data:${body}`);
-	try{
-          const {identityToken, nonce} = JSON.parse(body);
-          
+    console.log("Decoded JWT payload:", payload);
+    console.log("SECRET_KEY:", SECRET_KEY);
 
-	  const base64Payload = identityToken.split('.')[1];
-	  const payloadBuffer = Buffer.from(base64Payload, 'base64');
-	  const payloadJSON = payloadBuffer.toString('utf-8');
-	  console.log("Decoded JWT payload:", payloadJSON);
-	  console.log("APPLE_CLIENT_ID:",APPLE_CLIENT_ID);
-	  console.log(`nonce:${nonce}`);
-	  //Appleトークンの検証
-	  const payload = await appleSignin.verifyIdToken(identityToken,{
-	    audience:APPLE_CLIENT_ID,
-	    nonce: nonce,
-	  });
-	  console.log("Expected nonce (raw):",nonce);
-	  console.log("secret key is:",SECRET_KEY);
+    // JWTの生成
+    const token = jwt.sign(
+      {
+        sub: payload.sub,
+        email: payload.email,
+      },
+      SECRET_KEY,
+      { expiresIn: "1h" }
+    );
 
-	  //JWTトークンの生成
-	  const token = jwt.sign(
-	    {
-	      sub:payload.sub,
-	      email:payload.email,
-	    },
-	    SECRET_KEY,
-	    {expiresIn: "1h"}
-	  );
-
-          res.writeHead(200,{
-	    "Content-Type":"application/json"
-	  });
-	  console.log("Token nonce (decoded):",payload.nonce);
-	  //res.write(`Apple ID sub:${payload.sub}\n`);
-	  res.end(JSON.stringify({token}));
-	}catch(e){
-	  console.error("verifyIdToken error:", e);
-	  res.writeHead(400,{
-            "Content-Type":"application/json"
-          });	
-	  res.end(JSON.stringify({error:"invalid request"}));
-	}
-    });
-  }else{
-    res.writeHead(404,{
-        "Content-Type":"application/json"
-    });
-    res.end("Not Found");
+    res.json({ token, success: true });
+  } catch (e) {
+    console.error("verifyIdToken error:", e);
+    res.status(400).json({ error: "Invalid request", success: false });
   }
+});
 
-}).listen(PORT,()=>{
-	console.log(`running on ${PORT}`);
+// 404ハンドリング（他のルートはNot Found）
+app.use((req, res) => {
+  res.status(404).json({ error: "Not Found" });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
