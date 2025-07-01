@@ -11,6 +11,7 @@ const APPLE_CLIENT_ID = process.env.Apple_Client_Id;
 
 // JSONのボディをパースするミドルウェア
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // この行を追加
 
 // POST /appleSignIn エンドポイント
 app.post("/appleSignIn", async (req, res) => {
