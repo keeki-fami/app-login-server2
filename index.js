@@ -16,6 +16,8 @@ app.use(express.urlencoded({ extended: true })); // この行を追加
 // POST /appleSignIn エンドポイント
 app.post("/appleSignIn", async (req, res) => {
   try {
+
+    console.log("Received body from Apple:", req.body);
     //const { identityToken, nonce } = req.body;
     const identityToken = req.body.id_token;
     const nonce = req.body.nonce;
