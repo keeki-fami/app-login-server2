@@ -15,8 +15,10 @@ app.use(express.json());
 // POST /appleSignIn エンドポイント
 app.post("/appleSignIn", async (req, res) => {
   try {
-    const { identityToken, nonce } = req.body;
-
+    //const { identityToken, nonce } = req.body;
+    const identityToken = req.body.id_token;
+    const nonce = req.body.nonce;
+    
     if (!identityToken || !nonce) {
       return res.status(400).json({ error: "Missing identityToken or nonce" });
     }
