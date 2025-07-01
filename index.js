@@ -20,16 +20,16 @@ app.post("/appleSignIn", async (req, res) => {
     console.log("Received body from Apple:", req.body);
     //const { identityToken, nonce } = req.body;
     const identityToken = req.body.id_token;
-    const nonce = req.body.nonce;
+    //const nonce = req.body.nonce;
     
-    if (!identityToken || !nonce) {
+    if (!identityToken) {
       return res.status(400).json({ error: "Missing identityToken or nonce" });
     }
 
     // Appleトークンの検証
     const payload = await appleSignin.verifyIdToken(identityToken, {
       audience: APPLE_CLIENT_ID,
-      nonce: nonce,
+      //nonce: nonce,
     });
 
     console.log("Decoded JWT payload:", payload);
