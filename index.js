@@ -54,4 +54,16 @@ app.use((req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+
 });
+
+// 404ハンドリング（他のルートはNot Found）
+app.use((req, res) => {
+  res.status(404).json({ error: "Not Found" });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+
