@@ -45,7 +45,7 @@ app.post("/appleSignIn", async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    res.json({ token, success: true });
+    res.json({ token, sub:payload.sub,success: true });//キー名と値が同じときは省略可
   } catch (e) {
     console.error("verifyIdToken error:", e);
     res.status(400).json({ error: "Invalid request", success: false });
