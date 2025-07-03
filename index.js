@@ -45,10 +45,14 @@ app.post("/appleSignIn", async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    res.json({ token, sub:payload.sub,success: true });//キー名と値が同じときは省略可
+    const redirectURL = `myapp://callback?token=${token}&sub=${payload.sub}`;
+    res.redirect(redirectURL);
+    //res.json({ token, sub:payload.sub,success: true });//キー名と値が同じときは省略可
   } catch (e) {
     console.error("verifyIdToken error:", e);
-    res.status(400).json({ error: "Invalid request", success: false });
+    const errorMessage = "AuthenticationFailed";
+    //res.status(400).json({ error: "Invalid request", success: false });
+    res.redirect('myapp://callback?error=true&message=${errorMessage}');
   }
 });
 
